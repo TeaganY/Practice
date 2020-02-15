@@ -20,10 +20,10 @@ import frc.robot.RobotContainer;
 import frc.robot.VariableVault;
 
 public class Drivetrain extends SubsystemBase {
-  private final WPI_TalonSRX leftMaster= new WPI_TalonSRX(VariableVault.kLeftMasterMotorID);
-  private final WPI_TalonSRX rightMaster = new WPI_TalonSRX(VariableVault.kRightMasterMotorID);
-  private final WPI_TalonSRX leftSlave = new WPI_TalonSRX(VariableVault.kLeftSlaveMotorID);
-  private final WPI_TalonSRX rightSlave = new WPI_TalonSRX(VariableVault.kRightSlaveMotorID);
+  private static WPI_TalonSRX leftMaster= new WPI_TalonSRX(VariableVault.kLeftMasterMotorID);
+  private static WPI_TalonSRX rightMaster = new WPI_TalonSRX(VariableVault.kRightMasterMotorID);
+  private static WPI_TalonSRX leftSlave = new WPI_TalonSRX(VariableVault.kLeftSlaveMotorID);
+  private static WPI_TalonSRX rightSlave = new WPI_TalonSRX(VariableVault.kRightSlaveMotorID);
 
   private final DifferentialDrive drive = new DifferentialDrive(leftMaster, rightMaster);
 
@@ -56,4 +56,31 @@ public class Drivetrain extends SubsystemBase {
   public void OpDrive(Joystick stick) {
     drive.arcadeDrive(-stick.getY(), -stick.getZ());
   }
+
+
+  public static void Forward() {
+    rightMaster.set(1);
+    leftMaster.set(1);
+  }
+
+  public static void Reverse() {
+    rightMaster.set(-1);
+    leftMaster.set(-1);
+  }
+
+  public static void turnLeft() {
+    rightMaster.set(1);
+    leftMaster.set(-1);
+  }
+
+  public static void turnRight() {
+    rightMaster.set(-1);
+    leftMaster.set(1);
+  }
+
+  public static void stopDriveMotors() {
+    rightMaster.stopMotor();
+    leftMaster.stopMotor();
+  }
+
 }

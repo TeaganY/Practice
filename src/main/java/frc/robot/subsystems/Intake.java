@@ -33,4 +33,30 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public void moveWristPositive() {
+    wrist.set(1);
+  }
+
+  public void moveWristNegative() {
+    wrist.set(-1);
+  }
+
+  public void wristStopMoving() {
+    wrist.stopMotor();
+  }
+
+  public void moveIntakePositive() {
+    intake.set(1);
+  }
+
+  public void moveIntakeNegative() {
+    intake.set(-1);
+    }
+  
+  public void intakeStopMoving() {
+    intake.stopMotor();
+  }
+  
+  
 }

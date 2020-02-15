@@ -10,8 +10,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.ExampleCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.A1;
+import frc.robot.commands.intakeOff;
+import frc.robot.commands.intakeOn;
+import frc.robot.commands.wristDown;
+import frc.robot.commands.wristUp;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -35,16 +42,34 @@ public class RobotContainer {
   private static final Joystick OpStick = new Joystick(VariableVault.kJoystickID);
   private static final Joystick CoopStick = new Joystick(VariableVault.kCoopStickID);
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final wristUp cWristUp = new wristUp(sIntake);
+  private final wristDown cWristDown = new wristDown(sIntake);
+  private final intakeOn cIntakeOn = new intakeOn(sIntake);
+  private final intakeOff cIntakeOff = new intakeOff(sIntake);
 
+  private JoystickButton moveWristUp;
+  private JoystickButton moveWristDown;
+  private JoystickButton turnIntakeOn;
+  private JoystickButton turnIntakeOff;
+
+  private final A1 cA1;
+
+  public String A1 = "A1";
+
+  SendableChooser<String> chooser = new SendableChooser<String>();
 
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    cA1 = new A1(sDrivetrain);\
+    chooser.addDefault("Default", "Default");
+    chooser.addOption("A1", A1);
+    SmartDashboard.putData("Auto Chooser", chooser);
     // Configure the button bindings
     configureButtonBindings(); 
+
   }
 
   /**
@@ -54,6 +79,17 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    moveWristUp = new JoystickButton(OpStick, 1);
+    moveWristUp.whenPressed(new wristUp(sIntake));
+    
+    moveWristDown = new JoystickButton(OpStick, 2);
+    moveWristDown.whenPressed(new wristDown(sIntake));
+
+    turnIntakeOn = new JoystickButton(OpStick, 3);
+    turnIntakeOn.whenPressed(new intakeOn(sIntake));
+
+    turnIntakeOff = new JoystickButton(OpStick, 4);
+    turnIntakeOff.whenPressed(new intakeOff(sIntake));
   }
 
 
@@ -63,8 +99,19 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    String choice = chooser.getSelected();
+    Command autoCommand = null;
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+
+    switch(choice) {
+      case "A1":
+        autoCommand = cA1;
+        break;
+      case "default":
+        autoCommand = null;
+        break;
+    }
+    return autoCommand;
   }
 
   public static Joystick getOpStick() {
